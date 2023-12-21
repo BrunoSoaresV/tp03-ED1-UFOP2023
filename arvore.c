@@ -4,21 +4,19 @@
 
 // Aloca um novo nó da Árvore Rubro-Negra
 RBTree* alocarArvore() {
-    // Aloca memória para um novo nó
-    RBTree *novoNo = (RBTree*)malloc(sizeof(RBTree));
-    if (novoNo) {
-        // Chama leArvore para inicializar o novo nó
-        leArvore(novoNo);
-    }
-    return novoNo; // Retorna o novo nó alocado
+    return (RBTree*)malloc(sizeof(RBTree));
 }
 
 // Função para leitura e inicialização da árvore
-void leArvore(RBTree *arvore) {
-    // Configura cor e ponteiros do nó para o padrão
-    arvore->cor = VERMELHO; 
-    arvore->esquerda = arvore->direita = arvore->pai = NULL;
+RBTree* leArvore() {
+    RBTree *novoNo = alocarArvore();
+    if (novoNo) {
+        novoNo->cor = VERMELHO;
+        novoNo->esquerda = novoNo->direita = novoNo->pai = NULL;
+    }
+    return novoNo; // Retorna o nó alocado e inicializado
 }
+
 
 // Desaloca um nó da Árvore Rubro-Negra
 void desalocarArvore(RBTree* arvore) {
@@ -161,5 +159,3 @@ void printInOrder(RBTree *raiz) {
         printInOrder(raiz->direita); // Depois, visita a subárvore direita recursivamente
     }
 }
-
-
