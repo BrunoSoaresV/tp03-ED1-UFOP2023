@@ -13,7 +13,7 @@ int main() {
             scanf("%d", &qtd); // Lê a quantidade de pessoas a serem inseridas
             for (i = 0; i < qtd; i++) {
                 scanf("%s %d", pessoa.nome, &pessoa.idade); // Lê nome e idade da pessoa
-                RBTree *novoNo = alocarArvore(); // Aloca um novo nó
+                RBTree *novoNo = leArvore(); // Lê um novo nó da árvore
                 novoNo->dado = pessoa; // Atribui os dados da pessoa ao nó
                 insercao(&raiz, novoNo); // Insere o nó na árvore
             }
