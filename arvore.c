@@ -18,7 +18,7 @@ RBTree* leArvore() {
 }
 
 
-// Desaloca um nó da Árvore Rubro-Negra
+// Desaloca a Árvore
 void desalocarArvore(RBTree* arvore) {
     if (arvore != NULL) {
         // Desaloca recursivamente os nós filhos
