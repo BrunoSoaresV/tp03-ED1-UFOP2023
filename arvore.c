@@ -7,9 +7,8 @@ RBTree* alocarArvore() {
     // Aloca memória para um novo nó
     RBTree *novoNo = (RBTree*)malloc(sizeof(RBTree));
     if (novoNo) {
-        // Inicializa ponteiros e cor do novo nó
-        novoNo->pai = novoNo->esquerda = novoNo->direita = NULL;
-        novoNo->cor = VERMELHO; // Novos nós são vermelhos por padrão
+        // Chama leArvore para inicializar o novo nó
+        leArvore(novoNo);
     }
     return novoNo; // Retorna o novo nó alocado
 }
