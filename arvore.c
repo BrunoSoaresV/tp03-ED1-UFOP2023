@@ -11,12 +11,17 @@ RBTree* alocarArvore() {
 RBTree* leArvore() {
     RBTree *novoNo = alocarArvore();
     if (novoNo) {
-        novoNo->cor = VERMELHO;
+        // Define a cor do novo nó como VERMELHO. Na Árvore Rubro-Negra, novos nós são
+        // inseridos como vermelhos para manter as propriedades de balanceamento da árvore,
+        // já que adicionar um nó vermelho causa menos violações das regras da árvore.
+        novoNo->cor = VERMELHO; 
+        // Inicializa os ponteiros para os filhos esquerdo e direito e o pai como NULL.
+        // Isso é feito porque o novo nó ainda não está conectado na árvore, então seus
+        // ponteiros para os filhos e o pai ainda não têm referências válidas.
         novoNo->esquerda = novoNo->direita = novoNo->pai = NULL;
     }
     return novoNo; // Retorna o nó alocado e inicializado
 }
-
 
 // Desaloca a Árvore
 void desalocarArvore(RBTree* arvore) {
