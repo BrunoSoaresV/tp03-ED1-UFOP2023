@@ -19,7 +19,7 @@ typedef struct RBTree {
 // Protótipos das funções para a Árvore Rubro-Negra
 RBTree* alocarArvore();
 void desalocarArvore(RBTree* arvore);
-void leArvore(RBTree* arvore);
+RBTree* leArvore();
 void rotacaoDireita(RBTree** raiz, RBTree* x);
 void rotacaoEsquerda(RBTree** raiz, RBTree* x);
 void insercao(RBTree **raiz, RBTree *novoNo);
