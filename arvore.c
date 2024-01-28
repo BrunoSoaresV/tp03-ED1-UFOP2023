@@ -200,16 +200,13 @@ void remocao(RBTree **raiz, int idade) {
             break; // Nó encontrado
         }
     }
-
     if (no == NULL) {
         printf("Idade %d não encontrada na árvore.\n", idade);
         return;
     }
-
     RBTree *y = no;
     CorNo yOriginalCor = y->cor;
     RBTree *x;
-
     if (no->esquerda == NULL) {
         // Se o nó tem pelo menos um filho, atualiza o ponteiro para o filho não nulo
         x = no->direita;
@@ -239,9 +236,7 @@ void remocao(RBTree **raiz, int idade) {
         y->esquerda->pai = y;
         y->cor = no->cor;
     }
-
     free(no);
-
     // Caso a cor original de y seja preta e o filho substituto (x) não seja nulo,
     // ajusta a árvore para manter as propriedades de árvore rubro-negra
     if (yOriginalCor == PRETO && x != NULL) {
@@ -253,11 +248,9 @@ void remocao(RBTree **raiz, int idade) {
 void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
     while (x != *raiz && (x == NULL || x->cor == PRETO)) {
         // Continua enquanto não atingir a raiz e o nó atual (x) é nulo ou preto
-
         if (x == x->pai->esquerda) {
             // Se x é filho esquerdo do pai
             RBTree *irmao = x->pai->direita;
-
             if (irmao->cor == VERMELHO) {
                 // Caso 1: O irmão é vermelho, troca as cores com o pai e rotaciona à esquerda
                 irmao->cor = PRETO;
@@ -265,7 +258,6 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
                 rotacaoEsquerda(raiz, x->pai);
                 irmao = x->pai->direita;
             }
-
             if ((irmao->esquerda == NULL || irmao->esquerda->cor == PRETO) &&
                 (irmao->direita == NULL || irmao->direita->cor == PRETO)) {
                 // Caso 2: O irmão e os sobrinhos são pretos, colore o irmão de vermelho e sobe um nível
@@ -279,7 +271,6 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
                     rotacaoDireita(raiz, irmao);
                     irmao = x->pai->direita;
                 }
-
                 // Caso 4: O sobrinho direito do irmão é vermelho, ajusta as cores e rotaciona à esquerda no pai
                 irmao->cor = x->pai->cor;
                 x->pai->cor = PRETO;
@@ -291,7 +282,6 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
         } else {
             // Caso simétrico: x é filho direito
             RBTree *irmao = x->pai->esquerda;
-
             if (irmao->cor == VERMELHO) {
                 // Caso 1 (simétrico): O irmão é vermelho, troca as cores com o pai e rotaciona à direita
                 irmao->cor = PRETO;
@@ -299,7 +289,6 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
                 rotacaoDireita(raiz, x->pai);
                 irmao = x->pai->esquerda;
             }
-
             if ((irmao->direita == NULL || irmao->direita->cor == PRETO) &&
                 (irmao->esquerda == NULL || irmao->esquerda->cor == PRETO)) {
                 // Caso 2 (simétrico): O irmão e os sobrinhos são pretos, colore o irmão de vermelho e sobe um nível
@@ -313,7 +302,6 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
                     rotacaoEsquerda(raiz, irmao);
                     irmao = x->pai->esquerda;
                 }
-
                 // Caso 4 (simétrico): O sobrinho esquerdo do irmão é vermelho, ajusta as cores e rotaciona à direita no pai
                 irmao->cor = x->pai->cor;
                 x->pai->cor = PRETO;
@@ -328,3 +316,4 @@ void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
         x->cor = PRETO;  // Garante que a raiz da árvore seja preta
     }
 }
+
