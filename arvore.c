@@ -164,3 +164,167 @@ void printInOrder(RBTree *raiz) {
         printInOrder(raiz->direita); // Depois, visita a subárvore direita recursivamente
     }
 }
+
+// Função auxiliar para encontrar o nó mínimo em uma subárvore
+RBTree* encontrarMinimo(RBTree* no) {
+    while (no->esquerda != NULL) {
+        no = no->esquerda;  // Move-se para o nó mais à esquerda na subárvore
+    }
+    return no;  // Retorna o nó mínimo encontrado
+}
+
+// Função auxiliar para substituir um nó por outro
+void substituirNo(RBTree **raiz, RBTree *alvo, RBTree *substituto) {
+    if (alvo->pai == NULL) {
+        *raiz = substituto;  // Se o nó a ser substituído é a raiz, substitui a raiz pela nova raiz (substituto)
+    } else if (alvo == alvo->pai->esquerda) {
+        alvo->pai->esquerda = substituto;  // Se o nó a ser substituído é um filho esquerdo, substitui o pai->esquerda pelo substituto
+    } else {
+        alvo->pai->direita = substituto;  // Se o nó a ser substituído é um filho direito, substitui o pai->direita pelo substituto
+    }
+    if (substituto != NULL) {
+        substituto->pai = alvo->pai;  // Atualiza o pai do substituto para o pai do nó a ser substituído
+    }
+}
+
+// Função para realizar a remoção de um nó na árvore rubro-negra
+void remocao(RBTree **raiz, int idade) {
+    RBTree *no = *raiz;
+    // Procura o nó a ser removido
+    while (no != NULL) {
+        if (idade < no->dado.idade) {
+            no = no->esquerda;
+        } else if (idade > no->dado.idade) {
+            no = no->direita;
+        } else {
+            break; // Nó encontrado
+        }
+    }
+
+    if (no == NULL) {
+        printf("Idade %d não encontrada na árvore.\n", idade);
+        return;
+    }
+
+    RBTree *y = no;
+    CorNo yOriginalCor = y->cor;
+    RBTree *x;
+
+    if (no->esquerda == NULL) {
+        // Se o nó tem pelo menos um filho, atualiza o ponteiro para o filho não nulo
+        x = no->direita;
+        substituirNo(raiz, no, no->direita);
+    } else if (no->direita == NULL) {
+        // Se o nó tem apenas um filho, atualiza o ponteiro para o filho não nulo
+        x = no->esquerda;
+        substituirNo(raiz, no, no->esquerda);
+    } else {
+        // Se o nó tem ambos os filhos, encontra o sucessor (y) e ajusta os ponteiros
+        y = encontrarMinimo(no->direita);
+        yOriginalCor = y->cor;
+        x = y->direita;
+        if (y->pai == no) {
+            if (x != NULL) {
+                x->pai = y;
+            }
+        } else {
+            // Remove o sucessor (y) da posição original e ajusta os ponteiros
+            substituirNo(raiz, y, y->direita);
+            y->direita = no->direita;
+            y->direita->pai = y;
+        }
+        // Substitui o nó a ser removido (no) pelo seu sucessor (y) e ajusta os ponteiros
+        substituirNo(raiz, no, y);
+        y->esquerda = no->esquerda;
+        y->esquerda->pai = y;
+        y->cor = no->cor;
+    }
+
+    free(no);
+
+    // Caso a cor original de y seja preta e o filho substituto (x) não seja nulo,
+    // ajusta a árvore para manter as propriedades de árvore rubro-negra
+    if (yOriginalCor == PRETO && x != NULL) {
+        balanceamentoRemocao(raiz, x);
+    }
+}
+
+// Função para balancear a árvore após a remoção
+void balanceamentoRemocao(RBTree **raiz, RBTree *x) {
+    while (x != *raiz && (x == NULL || x->cor == PRETO)) {
+        // Continua enquanto não atingir a raiz e o nó atual (x) é nulo ou preto
+
+        if (x == x->pai->esquerda) {
+            // Se x é filho esquerdo do pai
+            RBTree *irmao = x->pai->direita;
+
+            if (irmao->cor == VERMELHO) {
+                // Caso 1: O irmão é vermelho, troca as cores com o pai e rotaciona à esquerda
+                irmao->cor = PRETO;
+                x->pai->cor = VERMELHO;
+                rotacaoEsquerda(raiz, x->pai);
+                irmao = x->pai->direita;
+            }
+
+            if ((irmao->esquerda == NULL || irmao->esquerda->cor == PRETO) &&
+                (irmao->direita == NULL || irmao->direita->cor == PRETO)) {
+                // Caso 2: O irmão e os sobrinhos são pretos, colore o irmão de vermelho e sobe um nível
+                irmao->cor = VERMELHO;
+                x = x->pai;
+            } else {
+                if (irmao->direita == NULL || irmao->direita->cor == PRETO) {
+                    // Caso 3: O irmão tem um sobrinho vermelho à esquerda, ajusta as cores e rotaciona à direita no irmão
+                    irmao->esquerda->cor = PRETO;
+                    irmao->cor = VERMELHO;
+                    rotacaoDireita(raiz, irmao);
+                    irmao = x->pai->direita;
+                }
+
+                // Caso 4: O sobrinho direito do irmão é vermelho, ajusta as cores e rotaciona à esquerda no pai
+                irmao->cor = x->pai->cor;
+                x->pai->cor = PRETO;
+                irmao->direita->cor = PRETO;
+                rotacaoEsquerda(raiz, x->pai);
+                x = *raiz;
+                // Finaliza o loop
+            }
+        } else {
+            // Caso simétrico: x é filho direito
+            RBTree *irmao = x->pai->esquerda;
+
+            if (irmao->cor == VERMELHO) {
+                // Caso 1 (simétrico): O irmão é vermelho, troca as cores com o pai e rotaciona à direita
+                irmao->cor = PRETO;
+                x->pai->cor = VERMELHO;
+                rotacaoDireita(raiz, x->pai);
+                irmao = x->pai->esquerda;
+            }
+
+            if ((irmao->direita == NULL || irmao->direita->cor == PRETO) &&
+                (irmao->esquerda == NULL || irmao->esquerda->cor == PRETO)) {
+                // Caso 2 (simétrico): O irmão e os sobrinhos são pretos, colore o irmão de vermelho e sobe um nível
+                irmao->cor = VERMELHO;
+                x = x->pai;
+            } else {
+                if (irmao->esquerda == NULL || irmao->esquerda->cor == PRETO) {
+                    // Caso 3 (simétrico): O irmão tem um sobrinho vermelho à direita, ajusta as cores e rotaciona à esquerda no irmão
+                    irmao->direita->cor = PRETO;
+                    irmao->cor = VERMELHO;
+                    rotacaoEsquerda(raiz, irmao);
+                    irmao = x->pai->esquerda;
+                }
+
+                // Caso 4 (simétrico): O sobrinho esquerdo do irmão é vermelho, ajusta as cores e rotaciona à direita no pai
+                irmao->cor = x->pai->cor;
+                x->pai->cor = PRETO;
+                irmao->esquerda->cor = PRETO;
+                rotacaoDireita(raiz, x->pai);
+                x = *raiz;
+                // Finaliza o loop
+            }
+        }
+    }
+    if (x != NULL) {
+        x->cor = PRETO;  // Garante que a raiz da árvore seja preta
+    }
+}
