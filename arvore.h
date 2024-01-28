@@ -25,5 +25,8 @@ void rotacaoEsquerda(RBTree** raiz, RBTree* x);
 void insercao(RBTree **raiz, RBTree *novoNo);
 void balanceamento(RBTree **raiz, RBTree *novoNo);
 void printInOrder(RBTree* raiz);
-
+RBTree* encontrarMinimo(RBTree* no);
+void substituirNo(RBTree **raiz, RBTree *alvo, RBTree *substituto);
+void remocao(RBTree **raiz, int idade);
+void balanceamentoRemocao(RBTree **raiz, RBTree *x);
 #endif // ARVORE_H
