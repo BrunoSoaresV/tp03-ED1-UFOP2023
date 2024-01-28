@@ -20,6 +20,11 @@ int main() {
         } else if (operacao == 2) { // Se a operação for 2, imprime a árvore in-order
             printf("Dados inOrder:\n");
             printInOrder(raiz); // Chama a função para imprimir a árvore
+        } else if (operacao == 3) {
+            // Se a operação for 3, remove uma pessoa da árvore
+            int idade;
+            scanf("%d", &idade); // Lê a idade da pessoa a ser removida
+            remocao(&raiz, idade); // Chama a função de remoção
         }
     } while (operacao != 0); // Repete até que a operação seja 0
     // Após o loop, verifica se a árvore não está vazia e a imprime
